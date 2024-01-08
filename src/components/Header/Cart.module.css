@@ -1,0 +1,26 @@
+
+.price {
+    text-align: center;
+}
+
+.modal {
+    max-height: 450px;
+    overflow:scroll;
+}
+
+.quantity {
+    color: white;
+    margin-top: 4px;
+    font-size: medium;
+    font-weight: bold;
+}
+
+.parentBtn {
+    padding: 6px;
+    width: 80px;
+    background: #dc3545;
+    display: flex;
+    justify-content: space-between;
+    border-radius: 10px;
+}
+
