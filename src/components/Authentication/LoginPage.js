@@ -10,7 +10,7 @@ const LoginPage = () => {
   const authCtx = useContext(AuthContext);
   const history = useHistory();
 
-  // console.log(history,"histoty login")
+  
   const emailInputRef = useRef();
   const passwordInputRef = useRef();
 
@@ -48,9 +48,9 @@ const LoginPage = () => {
       )
         .then((res) => {
           if (res.ok) {
-            // console.log("Login succesfullly");
+          
             return res.json().then((data) => {
-              // console.log(data, "data in login");
+             
               authCtx.login(data.idToken, data.email);
               history.replace("/store");
             });;
