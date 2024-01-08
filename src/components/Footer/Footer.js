@@ -1,29 +1,13 @@
-import { Col, Navbar } from "react-bootstrap";
-import classes from "./Footer.module.css"
+import React from "react";
+
+
 
 const Footer = () => {
-    return (
-        <Navbar fixed="bottom" bg="primary" variant="dark">
-                <Col className="col-7">
-                    <h3 className={classes.heading} >GADA Electronics</h3>
-                </Col>
-                
-                <Col className="col-5">
-                    <a href="https://www.youtube.com/">
-                        <img className={classes.images} src="https://prasadyash2411.github.io/ecom-website/img/6260efc8fc9a9002669d2f4ad9956cc0.jpg" alt="Not Loaded" />
-                    </a>
-         
-                    <a href="https://open.spotify.com/">
-                        <img className={classes.images} src="https://prasadyash2411.github.io/ecom-website/img/Spotify%20Logo.png" alt="Not Loaded"/>
-                    </a>
-
-                    <a href="https://www.facebook.com/">
-                        <img className={classes.images} src="https://prasadyash2411.github.io/ecom-website/img/Facebook%20Logo.png" alt="Not Loaded" />
-                    </a>
-                </Col>
-                    
-        </Navbar>
-    )
-}
+  return (
+    <div style={{backgroundColor:"black",padding:"0.50rem"}}>
+      <p style={{color:"white", textAlign:"center"}} >© 2023 All Rights Reserved</p>
+    </div>
+  );
+};
 
 export default Footer;

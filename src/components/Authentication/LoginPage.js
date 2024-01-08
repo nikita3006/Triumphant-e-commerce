@@ -32,7 +32,7 @@ const LoginPage = () => {
       emailInputRef.current.value = "";
       passwordInputRef.current.value = "";
       fetch(
-        "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyCBNqXOohJ5C1pTxxgYtTbpbxZc1ncW9fc",
+        "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyCrlV5MWuup7EMTd6AkwJVuA_aH7aSmWuY",
         {
           method: "POST",
           body: JSON.stringify({

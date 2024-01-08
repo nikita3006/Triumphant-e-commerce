@@ -12,7 +12,7 @@ const CartProvider = (props) => {
     let userName = userEmail && userEmail.split("@")[0];
     // console.log(userName,"userName in cartprovider")
   
-    const url = `https://ecom3-oct-default-rtdb.firebaseio.com/e-commerce/${userName}`
+    const url = `https://e-commerce-eeb2e-default-rtdb.firebaseio.com/${userName}`
 
     useEffect( () => {
         console.log(userEmail, "user changed")
