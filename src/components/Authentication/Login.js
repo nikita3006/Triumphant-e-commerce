@@ -6,7 +6,7 @@ import { NavLink, useHistory } from "react-router-dom";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 import AuthContext from "../../store/AuthContext";
 
-const LoginPage = () => {
+const LogIn = () => {
   const authCtx = useContext(AuthContext);
   const history = useHistory();
 
@@ -112,4 +112,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default LogIn;

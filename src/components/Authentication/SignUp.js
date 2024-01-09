@@ -5,7 +5,7 @@ import { NavLink, useHistory } from "react-router-dom";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 
 
-const SignUpPage = () => {
+const SignUp = () => {
   const emailInpurRef = useRef();
   const passwordInputRef = useRef();
   const confirmpasswordInputRef = useRef();
@@ -145,4 +145,4 @@ const SignUpPage = () => {
     </>
   );
 };
-export default SignUpPage;
+export default SignUp;
