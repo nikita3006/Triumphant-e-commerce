@@ -1,148 +1,100 @@
-import { Button, Form, Nav } from "react-bootstrap";
 import React, { useRef, useState } from "react";
-import classes from "./SignUpPage.module.css";
-import { NavLink, useHistory } from "react-router-dom";
-import { BsEye, BsEyeSlash } from "react-icons/bs";
-
+import { NavLink, useNavigate } from "react-router-dom";
+import back from '../../asset/back.jpg';
+import { Parallax } from 'react-parallax';
 
 const SignUp = () => {
-  const emailInpurRef = useRef();
-  const passwordInputRef = useRef();
-  const confirmpasswordInputRef = useRef();
+  const navigate = useNavigate();
+  const emailRef = useRef();
+  const passwordRef = useRef();
+  const [error, setError] = useState(null);
 
-  const history = useHistory();
-
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
-
-  const showPasswordHandler = () => {
-    setShowPassword(!showPassword);
-  }; 
-
-  const showConfirmPasswordHandler = () => {
-    setShowConfirmPassword(!showConfirmPassword);
+  const signUpContainerStyle = {
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    borderRadius: '8px',
+    boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
+    padding: '20px',
+    width: '300px',
+    textAlign: 'center',
+    margin: '0 auto',
+    marginTop: '90px',
   };
 
-  const submitHandler = (event) => {
-    event.preventDefault();
+  const inputStyle = {
+    width: '100%',
+    padding: '10px',
+    marginBottom: '15px',
+    boxSizing: 'border-box',
+    border: '1px solid #ccc',
+    borderRadius: '4px',
+  };
 
-    const enteredEmail = emailInpurRef.current.value;
-    const enteredPassword = passwordInputRef.current.value;
-    const confirmpassword = confirmpasswordInputRef.current.value;
+  const buttonStyle = {
+    width: '100%',
+    padding: '10px',
+    backgroundColor: '#4caf50',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+  };
 
-    if (enteredPassword !== confirmpassword) {
-      alert("Password and confirm password must match");
-    } else {
-      fetch(
-        "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCrlV5MWuup7EMTd6AkwJVuA_aH7aSmWuY",
-        {
-          method: "POST",
-          body: JSON.stringify({
-            email: enteredEmail,
-            password: enteredPassword,
-            returnSecureToken: true,
-          }),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      ).then((res) => {
-        if (res.ok) {
-          console.log("Account created succesfullly");
-          history.replace("/login");
-          alert("Account created succesful");
-        } else {
-          return res.json().then((data) => {
-            // console.log(data);
-            let errorMessage = "Authentication failed!";
-            if (data && data.error && data.error.message) {
-              errorMessage = data.error.message;
-            }
+  async function switchAuthModeHandler(e) {
+    try {
+      e.preventDefault();
+      setError(null);
 
-            alert(errorMessage);
-          });
-        }
+      // const validationData = {
+      //   email: emailRef.current.value,
+      //   password: passwordRef.current.value,
+      //   returnSecureToken: true,
+      // };
+
+      const response = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBCp9SmXtoPzu8R_bbOvzDcC-OKymv_Ucs', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: emailRef.current.value,
+          password: passwordRef.current.value,
+          returnSecureToken : true
+        }), //we put string always in object form
       });
+console.log(response, "res")
+      if (!response.ok) {
+        throw new Error('Sign-up failed');
+      }
+
+      const responseData = await response.json();
+
+      alert('Account created successfully');
+      navigate('/login');
+    } catch (error) {
+      setError(error.message || 'Sign-up failed');
     }
-    emailInpurRef.current.value = "";
-    passwordInputRef.current.value = "";
-    confirmpasswordInputRef.current.value = "";
-  };
+  }
+
   return (
     <>
-      <h5 className={classes.desclaimer}>
-        Disclaimer: Using this website implies agreement to our terms, including eligibility, account security, and privacy policies
-      </h5>
-      <section className={classes.box}>
-        <h1>SignUp</h1>
-        <Form onSubmit={submitHandler}>
-          <Form.Group className="mb-3">
-            <Form.Label style={{ color: "white" }}>Email</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Email"
-              required
-              ref={emailInpurRef}
-            />
-          </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Label style={{ color: "white" }}>Password</Form.Label>
-            <div className="input-group">
-              <Form.Control
-                type={showPassword ? "text" : "password"}
-                placeholder="Password"
-                ref={passwordInputRef}
-              />
-              <Button
-                className="input-group-append"
-                onClick={showPasswordHandler}
-              >
-                {showPassword ? <BsEyeSlash /> : <BsEye />}
-              </Button>
-            </div>
-          </Form.Group>
-
-          <Form.Group className="mb-3 ">
-            <Form.Label style={{ color: "white" }}>Confirm Password</Form.Label>
-            <div className="input-group">
-              <Form.Control
-                type={showConfirmPassword ? "text" : "password"}
-                placeholder="Confirm Password"
-                ref={confirmpasswordInputRef}
-                required
-              />
-              <Button
-                className="input-group-append"
-                onClick={showConfirmPasswordHandler}
-              >
-                {showConfirmPassword ? <BsEyeSlash /> : <BsEye />}
-              </Button>
-            </div>
-            {/* <Form.Control
-              type="password"
-              placeholder="Confirm Password"
-              required
-              ref={confirmpasswordInputRef}
-            /> */}
-          </Form.Group>
-
+      <Parallax bgImage={back} strength={800} style={{ height: '100vh' }}>
+        <div style={signUpContainerStyle}>
+          <h2>Sign Up</h2>
+          {error && <p style={{ color: 'red' }}>{error}</p>}
+          <input type="email" placeholder="Email" ref={emailRef} required style={inputStyle} />
+          <input type="password" placeholder="Password" ref={passwordRef} required style={inputStyle} />
+          <button type="button" onClick={switchAuthModeHandler} style={buttonStyle}>
+            Create new account
+          </button>
           <div>
-            <Button variant="success pl-2" type="submit">
-              Create Account
-            </Button>
-          </div>
-          <Nav>
-            <NavLink
-              to="/login"
-              style={{ color: "white", paddingTop: "1rem" }}
-            >
+            <NavLink to="/login" style={{ color: "white", paddingTop: "1rem" }}>
               Have an Account?
             </NavLink>
-          </Nav>
-        </Form>
-      </section>
+          </div>
+        </div>
+      </Parallax>
     </>
   );
 };
+
 export default SignUp;

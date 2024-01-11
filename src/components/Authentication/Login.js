@@ -1,115 +1,122 @@
 import React, { useContext, useState } from "react";
-import classes from "./SignUpPage.module.css";
-import { Button, Form, Nav } from "react-bootstrap";
-import { useRef } from "react";
-import { NavLink, useHistory } from "react-router-dom";
-import { BsEye, BsEyeSlash } from "react-icons/bs";
+import { Navigate, useNavigate } from "react-router-dom";
 import AuthContext from "../../store/AuthContext";
+import { Parallax } from 'react-parallax';
+import { z, object } from 'zod';
+import back2 from '../../asset/back2.jpg';
 
-const LogIn = () => {
+const schema = object({
+  email: z.string().email(),
+  password: z.string().min(6),
+  firstName: z.string().min(2),
+  phoneNumber: z.string().refine((value) => /^\d{10}$/.test(value), {
+    message: 'Invalid phone number format. Please enter 10 digits.',
+  }),
+});
+
+const loginContainerStyle = {
+  backgroundColor: 'transparent',
+  borderRadius: '8px',
+  boxShadow: '0 0 40px rgba(200, 40, 80, 0.7)',
+  padding: '20px',
+  width: '300px',
+  textAlign: 'center',
+  margin: '0 auto',
+  marginBottom: '90px',
+};
+
+const inputStyle = {
+  width: '100%',
+  padding: '10px',
+  marginBottom: '15px',
+  boxSizing: 'border-box',
+  border: '1px solid #ccc',
+  borderRadius: '4px',
+};
+
+const buttonStyle = {
+  width: '100%',
+  padding: '10px',
+  backgroundColor: '#4caf50',
+  color: '#fff',
+  border: 'none',
+  borderRadius: '4px',
+  cursor: 'pointer',
+};
+
+function LogIn() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const navigate = useNavigate();
   const authCtx = useContext(AuthContext);
-  const history = useHistory();
 
-  
-  const emailInputRef = useRef();
-  const passwordInputRef = useRef();
-
-  const [showPassword, setShowPassword] = useState(false);
-
-  const showPasswordHandler = () => {
-    setShowPassword(!showPassword);
-  }; 
-
-  const submitHandler = (event) => {
-    event.preventDefault();
-    const enteredEmail = emailInputRef.current.value;
-    const enteredPassword = passwordInputRef.current.value;
-
-    if (enteredEmail === "" || enteredPassword === "") {
-      alert("Must fill both Email and Password");
-      return;
-    } else {
-      emailInputRef.current.value = "";
-      passwordInputRef.current.value = "";
-      fetch(
-        "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyCrlV5MWuup7EMTd6AkwJVuA_aH7aSmWuY",
-        {
-          method: "POST",
-          body: JSON.stringify({
-            email: enteredEmail,
-            password: enteredPassword,
-            returnSecureToken: true,
-          }),
-
-          headers: {
-            "Content-Type": "application/json",
-          },
+  async function switchAuthModeHandler(e) {
+    try {
+      e.preventDefault();
+      schema.parse({ email, password, firstName, phoneNumber });
+      const response = await fetch("https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBCp9SmXtoPzu8R_bbOvzDcC-OKymv_Ucs", {
+        method: "POST",
+        body: JSON.stringify({
+          email,
+          password,
+          returnSecureToken: true
+        }),
+        headers: {
+          'Content-Type': 'application/json'
         }
-      )
-        .then((res) => {
-          if (res.ok) {
-          
-            return res.json().then((data) => {
-             
-              authCtx.login(data.idToken, data.email);
-              history.replace("/store");
-            });;
-          } else {
-            return res.json().then((data) => {
-              let errorMessage = "Authentication filed!";
-              if (data && data.error && data.error.message) {
-                errorMessage = data.error.message;
-              }
-              alert(errorMessage);
-            });
-          }
-        })
+      });
+      if (!response) {
+        throw new Error('Error with response');
+      }
+      const data = await response.json();
+      authCtx.login(data.idToken,data.email); //unique key
+      console.log(data);
+      navigate("/home");
+    } catch (error) {
+      alert(error);
     }
-  };
+  }
 
   return (
-    <>
-      <h5 className={classes.desclaimer}>
-        Disclaimer: Using this website implies agreement to our terms, including eligibility, account security, and privacy policies
-      </h5>
-      <section className={classes.box}>
-        <h1>Login</h1>
-        <Form onSubmit={submitHandler}>
-          <Form.Group className="mb-3">
-            <Form.Label style={{ color: "white" }}>Email</Form.Label>
-            <Form.Control type="text" placeholder="Email" ref={emailInputRef} />
-          </Form.Group>
-
-          <Form.Group className="mb-3">
-            <Form.Label style={{ color: "white" }}>Password</Form.Label>
-            <div className="input-group">
-              <Form.Control
-                type={showPassword ? "text" : "password"}
-                placeholder="Password"
-                ref={passwordInputRef}
-              />
-              <Button
-                className="input-group-append"
-                onClick={showPasswordHandler}
-              >
-                {showPassword ? <BsEyeSlash /> : <BsEye />}
-              </Button>
-            </div>
-          </Form.Group>
-
-          <div>
-            <Button type="submit" variant="primary">Login</Button>
-          </div>
-
-          <Nav>
-            <NavLink to="signup" style={{ color: "white", paddingTop: "1rem" }}>
-              Don't have an Account?
-            </NavLink>
-          </Nav>
-        </Form>
-      </section>
-    </>
+    <Parallax bgImage={back2} strength={800}>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <div style={loginContainerStyle}>
+          <h2>Login</h2>
+          <input
+            type="text"
+            placeholder="First Name"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            style={inputStyle}
+          />
+          <input
+            type="tel"
+            placeholder="Phone Number"
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
+            style={inputStyle}
+          />
+          <input
+            type="text"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            style={inputStyle}
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            style={inputStyle}
+          />
+          <button onClick={switchAuthModeHandler} style={buttonStyle}>Login</button>
+        </div>
+      </div>
+    </Parallax>
   );
-};
+}
 
 export default LogIn;
