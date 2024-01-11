@@ -5,6 +5,7 @@ import Home from './components/Pages/Home';
 import NavBar from './components/Header/NavBar';
 import LogIn from './components/Authentication/LogIn';
 import SignUp from './components/Authentication/SignUp';
+import AboutUs from './components/Pages/About';
 
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
         <Route path="/home" element={<Home/>} />
         <Route path="/login" element={<LogIn/>}/>
         <Route path="/signup" element={<SignUp/>}/>
+        <Route path="/aboutus" element={<AboutUs/>}/>
     </Routes>
     
       <Footer/>
